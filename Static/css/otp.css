@@ -1,87 +1,32 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #2196f3, #ffffff);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-/* Card Container */
-.container {
-    background: #fff;
-    padding: 40px;
-    border-radius: 16px;
-    width: 350px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    text-align: center;
-    animation: fadeIn 0.6s ease-in-out;
-}
+html,body{height:100%;background:#0a0a0a;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;}
 
-/* Heading */
-.container h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
+.otp-wrap{width:100%;max-width:420px;padding:24px;}
 
-/* Input Field */
-input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    outline: none;
-    font-size: 16px;
-    transition: 0.3s;
-}
+.otp-card{background:#111110;border:1px solid #222220;border-radius:16px;padding:40px 36px;position:relative;overflow:hidden;}
+.otp-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(212,163,64,.1) 0%,transparent 70%);pointer-events:none;}
 
-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 8px rgba(102,126,234,0.5);
-}
+.otp-brand{font-family:'Playfair Display',serif;font-size:18px;color:#e8e4dc;margin-bottom:28px;letter-spacing:.02em;}
+.otp-brand span{color:#d4a340;}
 
-/* Button */
-button {
-    width: 100%;
-    padding: 12px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+.otp-card h2{font-family:'Playfair Display',serif;font-size:24px;color:#e8e4dc;font-weight:700;margin-bottom:6px;}
+.otp-sub{font-size:13px;color:#555550;margin-bottom:28px;font-weight:300;}
 
-button:hover {
-    background: #5a67d8;
-    transform: translateY(-2px);
-}
+.otp-progress{display:flex;justify-content:center;gap:6px;margin-bottom:28px;}
+.otp-dot{width:6px;height:6px;border-radius:50%;background:#1e1e1c;transition:background .2s;}
+.otp-dot.active{background:#d4a340;}
 
-/* Error Message */
-.error {
-    color: red;
-    margin-top: 10px;
-    font-size: 14px;
-}
+.otp-digits{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
+.digit-box{width:52px;height:60px;background:#0d0d0c;border:1px solid #2a2a28;border-radius:10px;font-size:22px;font-weight:500;color:#e8e4dc;text-align:center;font-family:'Playfair Display',serif;outline:none;transition:border-color .2s,transform .15s;caret-color:#d4a340;}
+.digit-box:focus{border-color:#d4a340;transform:translateY(-2px);}
 
-/* Success Message */
-.success {
-    color: green;
-    margin-top: 10px;
-}
+.otp-error{font-size:12px;color:#c0504a;text-align:center;min-height:18px;margin-bottom:16px;}
 
-/* Animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+.otp-btn{width:100%;padding:13px;background:#d4a340;border:none;border-radius:8px;color:#0a0a0a;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:.03em;transition:background .2s,transform .1s;}
+.otp-btn:hover{background:#c49830;}
+.otp-btn:active{transform:scale(.98);}
+
+.otp-resend{text-align:center;margin-top:20px;font-size:12px;color:#444440;}
+.otp-resend-link{color:#d4a340;text-decoration:none;transition:color .2s;}
+.otp-resend-link:hover{color:#c49830;}

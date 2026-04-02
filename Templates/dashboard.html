@@ -2,72 +2,276 @@
 {% load static %}
 <html>
 <head>
-    <title>Admin </title>
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Padmini</title>
+<link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
-
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-    <h2>Padmini</h2>
-    <a href="{% url 'dashboard' %}">Home</a>
-    <a href="{% url 'itemcategory' %}">Item Category</a>
-    <a href="{% url 'allitems' %}">Items</a>
-    <a href="{% url 'feedbackview' %}">Feedback</a>
-    <a href="{% url 'booking' %}">Booking  {% if pending_count > 0 %}
-        <span style="background:red; color:white; padding:4px 8px; border-radius:50%; font-size:12px;">
-            {{ pending_count }}
-        </span>
-    {% endif %}</a>
-    <a href="{% url 'aboutus' %}">About us</a>
-    <a href="{% url 'offerus' %}">Offer</a>
-</div>
+<div class="shell">
 
-<!-- Topbar -->
-<div class="topbar">
-    <div class="profile">
-        <img src="{{ request.user.profile.image.url }}" width="50" height="50" style="border-radius:50%;">
-        <span onclick="toggleMenu()">
-        {{ request.user.username }} ⬇
-        </span>
-        <div class="dropdown" id="menu">
-            <a href="{% url 'admin-profile' %}">Profile</a>
-            
-
-            <form action="{% url 'admin_logout' %}" method="post" style="margin:0;">
-                {% csrf_token %}
-                <button style="width:100%; padding:10px; border:none; background:red; text-align:left;" >
-                    Logout
-                </button>
-            </form>
-        </div>
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-name">Padmini</div>
+      <div class="brand-sub">Admin Console</div>
     </div>
+
+    <nav class="nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="1" y="1" width="6" height="6" rx="1"/>
+          <rect x="9" y="1" width="6" height="6" rx="1"/>
+          <rect x="1" y="9" width="6" height="6" rx="1"/>
+          <rect x="9" y="9" width="6" height="6" rx="1"/>
+        </svg>
+        Dashboard
+      </a>
+
+      <div class="nav-section-label">Catalogue</div>
+      <a href="{% url 'itemcategory' %}" class="nav-item {% if request.resolver_match.url_name == 'itemcategory' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M2 3h12M2 7h8M2 11h10"/>
+        </svg>
+        Item Category
+      </a>
+      <a href="{% url 'allitems' %}" class="nav-item {% if request.resolver_match.url_name == 'allitems' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="2" y="2" width="5" height="5" rx="1" fill-opacity=".7"/>
+          <rect x="9" y="2" width="5" height="5" rx="1"/>
+          <rect x="2" y="9" width="5" height="5" rx="1"/>
+          <rect x="9" y="9" width="5" height="5" rx="1" fill-opacity=".5"/>
+        </svg>
+        Items
+      </a>
+
+      <div class="nav-section-label">Operations</div>
+      <a href="{% url 'booking' %}" class="nav-item {% if request.resolver_match.url_name == 'booking' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 1L1 5v6l7 4 7-4V5L8 1z"/>
+        </svg>
+        Bookings
+        {% if pending_count > 0 %}
+          <span class="badge">{{ pending_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'feedbackview' %}" class="nav-item {% if request.resolver_match.url_name == 'feedbackview' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M2 12L6 4l4 6 2-3 3 5H2z"/>
+        </svg>
+        Feedback
+      </a>
+
+      <div class="nav-section-label">Pages</div>
+      <a href="{% url 'aboutus' %}" class="nav-item {% if request.resolver_match.url_name == 'aboutus' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="8" r="6"/>
+          <path d="M8 5v3l2 2" stroke-linecap="round"/>
+        </svg>
+        About Us
+      </a>
+      <a href="{% url 'offerus' %}" class="nav-item {% if request.resolver_match.url_name == 'offerus' %}active{% endif %}">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M8 2l1.8 3.6L14 6.5l-3 2.9.7 4.1L8 11.4l-3.7 2.1.7-4.1L2 6.5l4.2-.9L8 2z"/>
+        </svg>
+        Offers
+      </a>
+    </nav>
+
+    <!-- Profile / Dropdown -->
+    <div class="sidebar-footer">
+      <div class="avatar-row" onclick="toggleDropdown()">
+        <div class="avatar">
+          {% if request.user.profile.image %}
+            <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.username }}">
+          {% else %}
+            {{ request.user.username|first|upper }}
+          {% endif %}
+        </div>
+        <div class="avatar-info">
+          <div class="avatar-name">{{ request.user.username }}</div>
+          <div class="avatar-role">Administrator</div>
+        </div>
+        <div class="avatar-caret">▲</div>
+      </div>
+
+      <div class="dropdown" id="dropdown">
+        <a href="{% url 'admin-profile' %}">View Profile</a>
+        <div class="dropdown-divider"></div>
+        <form action="{% url 'admin_logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main ── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        Admin / <span>{% block page_title %}Dashboard{% endblock %}</span>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <span id="theme-icon">☀</span>
+      </button>
+      <div class="topbar-dot"></div>
+      <div class="topbar-status">Live</div>
+    </div>
+
+    <!-- Page content -->
+    <div class="content">
+      {% block content %}
+
+      <!-- Welcome banner -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h1>Welcome back, {{ request.user.username }}</h1>
+          <p>Here's what's happening with Padmini today.</p>
+        </div>
+        <div class="welcome-accent">
+          <div class="welcome-date" id="date-display"></div>
+          <div class="welcome-time" id="time-display"></div>
+        </div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stat-grid">
+        <div class="stat-card amber">
+          <div class="stat-label">Total Bookings</div>
+          <div class="stat-value amber-text">{{ total_bookings|default:"—" }}</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value">{{ pending_count|default:"0" }}</div>
+          <div class="stat-sub">
+            {% if pending_count > 0 %}
+              <span class="stat-down">Needs attention</span>
+            {% else %}
+              All clear
+            {% endif %}
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Items Listed</div>
+          <div class="stat-value">{{ total_items|default:"—" }}</div>
+          <div class="stat-sub">Active catalogue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Feedback</div>
+          <div class="stat-value">{{ total_feedback|default:"—" }}</div>
+          <div class="stat-sub">Responses received</div>
+        </div>
+      </div>
+
+      <!-- Lower grid -->
+      <div class="lower-grid">
+
+        <!-- Recent bookings table -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Recent Bookings</div>
+            <a href="{% url 'booking' %}" class="panel-action">View all →</a>
+          </div>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Item</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for booking in recent_bookings %}
+              <tr>
+                <td>{{ booking.Name }}</td>
+                <td>{% for i in booking.items.all %}
+                    {{ i.Item_name}}
+                    {% endfor %}
+                </td>
+                <td>{{ booking.booking_date }}</td>
+                <td>
+                  {% if booking.status == 'Pending' %}
+                    <span class="status-pill pill-pending">Pending</span>
+                  {% elif booking.status == 'Confirmed' %}
+                    <span class="status-pill pill-confirmed">Confirmed</span>
+                  {% else %}
+                    <span class="status-pill pill-cancelled">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="empty-row">No bookings yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Quick Actions</div>
+          </div>
+          <div class="quick-actions">
+            <a href="{% url 'additem' %}" class="qa-btn"><span class="qa-icon">＋</span> Add New Item</a>
+            <a href="{% url 'add-itemcategory' %}" class="qa-btn"><span class="qa-icon">◎</span> Add Category</a>
+            <a href="{% url 'addoffer' %}" class="qa-btn"><span class="qa-icon">★</span> Manage Offers</a>
+            <a href="{% url 'booking' %}" class="qa-btn"><span class="qa-icon">◈</span> Manage Bookings</a>
+            <a href="{% url 'feedbackview' %}" class="qa-btn"><span class="qa-icon">◷</span> View Feedback</a>
+          </div>
+        </div>
+
+      </div>
+      {% endblock %}
+    </div>
+  </div>
 </div>
-<div class="content">
-    {% block content %}
-    <center><h1>Admin Dashboard</h1>
-    <h2>Welcome {{ request.user.username }}</h2>
-    {% endblock %}
-</div>
+
 <script>
-function toggleMenu() {
-    var menu = document.getElementById("menu");
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+function toggleDropdown() {
+  document.getElementById('dropdown').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.sidebar-footer')) {
+    document.getElementById('dropdown').classList.remove('open');
+  }
+});
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const td = document.getElementById('time-display');
+  const dd = document.getElementById('date-display');
+  if (td) td.textContent = h + ':' + m;
+  if (dd) dd.textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-icon').textContent = isLight ? '☾' : '☀';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
 }
 
-// 🔥 NEW: Close when clicking outside
-document.addEventListener("click", function(event) {
-    var profile = document.querySelector(".profile");
-    var menu = document.getElementById("menu");
-
-    // if click is NOT inside profile
-    if (!profile.contains(event.target)) {
-        menu.style.display = "none";
-    }
-});
+const saved = localStorage.getItem('theme');
+if (saved === 'light') {
+  document.body.classList.add('light');
+  document.getElementById('theme-icon').textContent = '☾';
+}
 </script>
 
 </body>

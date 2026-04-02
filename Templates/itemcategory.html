@@ -1,39 +1,48 @@
 {% extends "dashboard.html" %}
 
+{% block page_title %}Item Category{% endblock %}
+
 {% block content %}
-<h2>Item Category</h2>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Item Categories</div>
+    <div class="page-sub">{{ itemlist|length }} categor{{ itemlist|length|pluralize:"y,ies" }}</div>
+  </div>
+  
+</div>
+
 {% if itemlist %}
-    <table border="2" cellpadding="10" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Category Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        {% for item in itemlist %}
-        <tr>
-            <td >{{item.Category_name}}</td>
-            <td ><a href="{% url 'delete-itemcategory' item.id %}" style="color:red;">
-                ❌ Delete</a>
-            </td>
-            
-        </tr>
-        {% endfor %}
-        <tr>
-            <td ><a href="{% url 'add-itemcategory' %}" 
-            style="padding:8px 15px; background:green; color:white; text-decoration:none;">
-            ➕ Add Category
-            </a>&nbsp; &nbsp;</td>
-        </tr>
-    </table>
+<div class="panel">
+  <table class="booking-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Category Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in itemlist %}
+      <tr>
+        <td class="cell-secondary">{{ forloop.counter }}</td>
+        <td class="cell-name">{{ item.Category_name }}</td>
+        <td>
+          <a href="{% url 'delete-itemcategory' item.id %}" class="delete-btn">Delete</a>
+             {% comment %} onclick="return confirm('Delete {{ item.Category_name }}?')">Delete</a> {% endcomment %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 {% else %}
-    <h4>No Items in the Item List</h4>
-     <tr>
-            <td ><a href="{% url 'add-itemcategory' %}" 
-            style="padding:8px 15px; background:green; color:white; text-decoration:none;">
-            ➕ Add Category
-            </a>&nbsp; &nbsp;</td>
-        </tr>
+<div class="empty-state">
+  <div class="empty-icon">◎</div>
+  <div class="empty-title">No Categories Yet</div>
+  <div class="empty-sub">Add your first category to get started.</div>
+</div>
 {% endif %}
 
 {% endblock %}

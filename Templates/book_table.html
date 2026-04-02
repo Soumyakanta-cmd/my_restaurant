@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 
-{% block class %}class="sub_page"{% endblock class %}
+{% comment %} {% block class %}class="sub_page"{% endblock class %}
 {% block table_status %}active{% endblock table_status %}
 {% block main %}
  <!-- book section -->
@@ -78,13 +78,119 @@
           </div>
         </div>
         <div class="col-md-6">
+            <div class="map_container">
+              <iframe
+                width="100%"
+                height="300"
+                style="border:0; border-radius:10px;"
+                loading="lazy"
+                allowfullscreen
+                src="https://www.google.com/maps?q=Bhubaneswar&output=embed">
+              </iframe>
+            </div>
+        </div>
+        {% comment %} <div class="col-md-6">
           <div class="map_container ">
             <div id="googleMap"></div>
           </div>
+        </div> {% endcomment %}
+      {% comment %}</div>
+    </div>
+  </section>
+  <!-- end book section --> {% endcomment %}
+
+{% block class %}class="sub_page"{% endblock class %}
+{% block table_status %}active{% endblock table_status %}
+{% block main %}
+
+<section class="book_section layout_padding">
+  <div class="container">
+    <div class="heading_container">
+      <h2>Book A Table</h2>
+    </div>
+
+    {% if messages %}
+    <div class="book-messages">
+      {% for message in messages %}
+        <div class="book-msg">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form_container">
+          <form action="{% url 'Book_Table' %}" method="POST">
+            {% csrf_token %}
+
+            <div>
+              <input type="text" class="form-control" name="user_name" placeholder="Your Name" required>
+            </div>
+            <div>
+              <input type="text" class="form-control" name="phone_number" placeholder="Phone Number" required>
+            </div>
+            <div>
+              <input type="email" class="form-control" name="user_email" placeholder="Your Email" required>
+            </div>
+            <div>
+              <select class="form-control nice-select wide" name="total_person" required>
+                <option value="" disabled selected>How many persons?</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div>
+              <input type="date" name="booking_date" class="form-control" id="booking_date" required>
+            </div>
+
+            <!-- Multi-item selector -->
+            <div class="items-selector">
+              <div class="items-label">Choose Items <span class="items-hint">(select one or more)</span></div>
+              <div class="items-grid" id="items-grid">
+                {% for item in items %}
+                <label class="item-card" id="card-{{ item.id }}">
+                  <input type="checkbox" name="items" value="{{ item.id }}"
+                         onchange="toggleCard({{ item.id }}, this)">
+                  <div class="item-card-name">{{ item.Item_name }}</div>
+                  <div class="item-card-price">₹{{ item.price }}</div>
+                  <div class="item-card-check">✓</div>
+                </label>
+                {% endfor %}
+              </div>
+              <div class="items-error" id="items-error"></div>
+            </div>
+
+            <!-- Selected summary -->
+            <div class="selected-summary" id="selected-summary" style="display:none;">
+              <span class="selected-label">Selected:</span>
+              <span id="selected-names"></span>
+            </div>
+
+            <div class="btn_box">
+              <button type="submit" onclick="return validateItems()">Book Now</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="map_container">
+          <iframe
+            width="100%"
+            height="300"
+            style="border:0; border-radius:10px;"
+            loading="lazy"
+            allowfullscreen
+            src="https://www.google.com/maps?q=Bhubaneswar&output=embed">
+          </iframe>
         </div>
       </div>
     </div>
-  </section>
-  <!-- end book section -->
+  </div>
+</section>
+
 
 {% endblock main %}

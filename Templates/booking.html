@@ -1,70 +1,98 @@
 {% extends "dashboard.html" %}
 
+{% block page_title %}Bookings{% endblock %}
+
 {% block content %}
 
-   
-    {% if booking %}
-    <h2>Booking List</h2>
-    <table border="2" cellpadding="10" class="table table-bordered">
-        <thead>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Total Person</th>
-            <th>Booking Date</th>
-            <th>Items</th>
-            <th>Status</th>
-            <th>Action</th>
-        </thead>
-        {% for book in booking %}
-        <tr>
-            <td>{{book.Name}}</td>
-            <td>{{book.Phone_number}}</td>
-            <td>{{book.Email}}</td>
-            <td>{{book.Total_person}}</td>
-            <td>{{book.booking_date}}</td>
-            <td>
-                {% for item in book.items.all %}
-                    {{ item.Item_name }}<br>
-                {% empty %}
-                    No Items
-                {% endfor %}
-            </td>
-            <td>
-                
-                {% if book.status == 'Confirmed' %}
-                    <span style="color:green;">Confirmed</span>
-                {% elif book.status == 'Cancelled' %}
-                    <span style="color:red;">Cancelled</span>
-                {% else %}
-                    Pending
-                {% endif %}
-            </td>
-            <td>
-                <form method="post" action="{% url 'update_booking' book.id %}">
-                    {% csrf_token %}
+{% if booking %}
 
-                    <select name="status">
-                        <option value="Pending" {% if book.status == 'Pending' %}selected{% endif %}>Pending</option>
-                         <option value="Confirmed" {% if book.status == 'Confirmed' %}selected{% endif %}>
-                            Confirmed
-                        </option>
+<div class="page-header">
+  <div>
+    <div class="page-title">Booking List</div>
+    <div class="page-sub">{{ booking|length }} total entr{{ booking|length|pluralize:"y,ies" }}</div>
+  </div>
+</div>
 
-                        <option value="Cancelled" {% if book.status == 'Cancelled' %}selected{% endif %}>
-                            Cancelled
-                        </option>
-                    </select>
+<div class="panel">
+  <table class="booking-table">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Contact</th>
+        <th>Persons</th>
+        <th>Date</th>
+        <th>Items</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in booking %}
+      <tr>
 
-                    <button type="submit" class="btn btn-success" >Update</button>
-                </form>
-            </td>
-            
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <h1>No Booking</h1>
-    {% endif %}
+        <td>
+          <div class="cell-name">{{ book.Name }}</div>
+        </td>
 
+        <td>
+          <div class="cell-primary">{{ book.Phone_number }}</div>
+          <div class="cell-secondary">{{ book.Email }}</div>
+        </td>
+
+        <td>
+          <span class="persons-pill">{{ book.Total_person }}</span>
+        </td>
+
+        <td>
+          <div class="cell-primary">{{ book.booking_date }}</div>
+        </td>
+
+        <td>
+          <div class="items-list">
+            {% for item in book.items.all %}
+              <span class="item-tag">{{ item.Item_name }}</span>
+            {% empty %}
+              <span class="cell-secondary">No items</span>
+            {% endfor %}
+          </div>
+        </td>
+
+        <td>
+          {% if book.status == 'Confirmed' %}
+            <span class="status-pill pill-confirmed">Confirmed</span>
+          {% elif book.status == 'Cancelled' %}
+            <span class="status-pill pill-cancelled">Cancelled</span>
+          {% else %}
+            <span class="status-pill pill-pending">Pending</span>
+          {% endif %}
+        </td>
+
+        <td>
+          <form method="post" action="{% url 'update_booking' book.id %}" class="action-form">
+            {% csrf_token %}
+            <select name="status" class="status-select">
+              <option value="Pending"   {% if book.status == 'Pending'   %}selected{% endif %}>Pending</option>
+              <option value="Confirmed" {% if book.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+              <option value="Cancelled" {% if book.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="update-btn">Update</button>
+          </form>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% else %}
+
+<div class="empty-state">
+  <div class="empty-icon">◈</div>
+  <div class="empty-title">No Bookings Yet</div>
+  <div class="empty-sub">When customers make bookings, they'll appear here.</div>
+</div>
+
+{% endif %}
 
 {% endblock %}

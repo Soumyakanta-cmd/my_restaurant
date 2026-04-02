@@ -2,29 +2,98 @@
 {% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>otp</title>
-    <link rel="stylesheet" href="{% static 'css/otp.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP — Padmini</title>
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/otp.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h2>Verify otp</h2>
-        <form method="post">
-            {% csrf_token %}
-            <input type="text" name="otp" placeholder="Enter otp" required>
-            <button type="Submit">Verify otp</button>
-        </form>
-        <center>
-            {% if messages %}
-                {% for message in messages %}
-                    <p style="color:red;">{{message}}</p>
-                {% endfor %}
-            {% endif %}
-        </center>
+
+<div class="otp-wrap">
+  <div class="otp-card">
+
+    <div class="otp-brand">Padmini <span>Admin</span></div>
+    <h2>Verify OTP</h2>
+    <p class="otp-sub">Enter the 6-digit code sent to your email</p>
+
+    <div class="otp-progress" id="progress">
+      <div class="otp-dot active"></div>
+      <div class="otp-dot"></div>
+      <div class="otp-dot"></div>
+      <div class="otp-dot"></div>
+      <div class="otp-dot"></div>
+      <div class="otp-dot"></div>
     </div>
+
+    <form method="post" id="otp-form">
+      {% csrf_token %}
+      <input type="hidden" name="otp" id="otp-hidden">
+
+      <div class="otp-digits" id="digits">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+        <input class="digit-box" maxlength="1" type="text" inputmode="numeric" autocomplete="off">
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="otp-error">{{ message }}</div>
+        {% endfor %}
+      {% else %}
+        <div class="otp-error" id="otp-error"></div>
+      {% endif %}
+
+      <button type="submit" class="otp-btn" id="submit-btn">Verify OTP</button>
+    </form>
+
     
-   
-    
+
+  </div>
+</div>
+
+<script>
+const boxes = document.querySelectorAll('.digit-box');
+const dots  = document.querySelectorAll('.otp-dot');
+const hidden = document.getElementById('otp-hidden');
+
+boxes.forEach((box, i) => {
+  box.addEventListener('input', e => {
+    box.value = e.target.value.replace(/\D/g,'').slice(0,1);
+    if (box.value && i < boxes.length - 1) boxes[i+1].focus();
+    sync();
+  });
+  box.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !box.value && i > 0) boxes[i-1].focus();
+  });
+  box.addEventListener('paste', e => {
+    const p = e.clipboardData.getData('text').replace(/\D/g,'');
+    boxes.forEach((b, j) => { if (p[j]) b.value = p[j]; });
+    boxes[Math.min(p.length, boxes.length - 1)].focus();
+    sync(); e.preventDefault();
+  });
+});
+
+function sync() {
+  const val = [...boxes].map(b => b.value).join('');
+  hidden.value = val;
+  dots.forEach((d, i) => d.classList.toggle('active', i < val.length));
+}
+
+document.getElementById('otp-form').addEventListener('submit', e => {
+  const val = [...boxes].map(b => b.value).join('');
+  if (val.length < 6) {
+    e.preventDefault();
+    document.getElementById('otp-error').textContent = 'Please enter all 6 digits.';
+  }
+});
+
+boxes[0].focus();
+</script>
+
 </body>
 </html>

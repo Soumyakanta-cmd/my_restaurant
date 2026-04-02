@@ -1,23 +1,31 @@
 {% extends "dashboard.html" %}
 
+{% block page_title %}Delete Category{% endblock %}
+
 {% block content %}
-<center>
 
-<h2>Delete Category</h2>
+<div class="confirm-wrap">
+  <div class="panel confirm-panel">
+    <div class="panel-header">
+      <div class="panel-title">Delete Category</div>
+    </div>
+    <div class="confirm-body">
 
-<p>Are you sure you want to delete:</p>
+      <p class="confirm-question">
+        Are you sure you want to delete
+        <span class="cell-name">{{ item.Category_name }}</span>?
+      </p>
 
-<h3>{{ item.Category_name }}</h3>
+      <div class="confirm-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="danger-btn">Yes, Delete</button>
+        </form>
+        <a href="{% url 'itemcategory' %}" class="delete-btn">Cancel</a>
+      </div>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" style="background:red; color:white;">
-        Yes, Delete
-    </button>
-</form>
+    </div>
+  </div>
+</div>
 
-<br>
-<a href="{% url 'itemcategory' %}">Cancel</a>
-
-</center>
 {% endblock %}

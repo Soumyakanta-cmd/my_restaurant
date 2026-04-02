@@ -1,49 +1,64 @@
-{% extends 'dashboard.html' %}
+{% extends "dashboard.html" %}
+
+{% block page_title %}Items{% endblock %}
+
 {% block content %}
-<h2>All Items</h2>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">All Items</div>
+    <div class="page-sub">{{ items|length }} item{{ items|length|pluralize }}</div>
+  </div>
+  
+</div>
+
 {% if items %}
-<table border="2" cellpadding="10" class="table table-bordered">
+<div class="panel">
+  <table class="booking-table">
     <thead>
-        <tr>
-            <th>Item Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Action</th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>{{item.Item_name}}</td>
-            <td>{{item.Category}}</td>
-            <td>{{item.price}}</td>
-            <td>{{item.description}}</td>
-            <td>{% if item.Image %}
-                    <img src="{{ item.Image.url }}" width="80" height="80">
-                {% else %}
-                    No Image
-                {% endif %}</td>
-            <td ><a href="{% url 'deleteitem' item.id %}" style="color:red;">
-                Delete</a>/<a href="{% url 'updateitem' item.id %}" style="color:rgb(0, 255, 162);">
-                Edit</a>
-            </td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td ><a href="{% url 'additem' %}" 
-            style="padding:8px 15px; background:green; color:white; text-decoration:none;">
-            + Add Category
-            &nbsp;&nbsp;</a></td>
-        </tr>
+      <tr>
+        <th>#</th>
+        <th>Image</th>
+        <th>Item Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Action</th>
+      </tr>
     </thead>
-</table>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td class="cell-secondary">{{ forloop.counter }}</td>
+        <td>
+          {% if item.Image %}
+            <img src="{{ item.Image.url }}" class="item-thumb">
+          {% else %}
+            <div class="no-image">—</div>
+          {% endif %}
+        </td>
+        <td class="cell-name">{{ item.Item_name }}</td>
+        <td><span class="item-tag">{{ item.Category }}</span></td>
+        <td class="cell-primary">₹{{ item.price }}</td>
+        <td class="cell-secondary desc-cell">{{ item.description }}</td>
+        <td>
+          <div class="row-actions">
+            <a href="{% url 'updateitem' item.id %}" class="edit-btn">Edit</a>
+            <a href="{% url 'deleteitem' item.id %}" class="delete-btn">Delete</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 {% else %}
-<h4>No Items in the list</h4>
-        <tr>
-            <td ><a href="{% url 'additem' %}" 
-            style="padding:8px 15px; background:green; color:white; text-decoration:none;">
-            + Add Category
-            &nbsp;&nbsp;</a></td>
-        </tr>
+<div class="empty-state">
+  <div class="empty-icon">◈</div>
+  <div class="empty-title">No Items Yet</div>
+  <div class="empty-sub">Add your first item to get started.</div>
+</div>
 {% endif %}
+
 {% endblock %}

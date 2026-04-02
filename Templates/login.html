@@ -1,32 +1,49 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
+{% load static %}
 
 {% block content %}
-<center>
-    {% if messages %}
-        {% for message in messages %}
-            <p style="color:red;">{{message}}</p>
-        {% endfor %}
-    {% endif %}
-</center>
 
-<div class="container">
-    <div class="container1">
-        <h2>Admin Login</h2>
-       <form method="post">
-            {% csrf_token %}
+<div class="auth-card">
 
-            <p>
-                <label>Username:</label><br>
-                <input type="text" name="username">
-            </p>
+  <div class="auth-title">Welcome back</div>
+  <div class="auth-sub">Sign in to your admin account</div>
 
-            <p>
-                <label>Password:</label><br>
-                <input type="password" name="password">
-            </p>
+  {% if messages %}
+  <div class="auth-messages">
+    {% for message in messages %}
+      <div class="auth-msg-error">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-            <button type="submit" class="btn btn-success">Login</button>
-        </form>
+  <form method="post" class="auth-form">
+    {% csrf_token %}
+
+    <div class="auth-group">
+      <label class="auth-label">Username</label>
+      <input type="text" name="username" placeholder="Enter username" autocomplete="username">
     </div>
+
+    <div class="auth-group">
+      <label class="auth-label">Password</label>
+      <div class="password-wrap">
+        <input type="password" name="password" id="password" placeholder="Enter password" autocomplete="current-password">
+        <button type="button" class="pw-toggle" onclick="togglePassword()">
+          <img src="{% static 'images/view.png' %}" width="16" height="16">
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" class="auth-btn">Login</button>
+  </form>
+
 </div>
+
+<script>
+function togglePassword() {
+  const f = document.getElementById('password');
+  f.type = f.type === 'password' ? 'text' : 'password';
+}
+</script>
+
 {% endblock %}

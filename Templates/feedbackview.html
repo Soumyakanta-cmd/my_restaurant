@@ -1,33 +1,59 @@
-{% extends 'dashboard.html' %}
+{% extends "dashboard.html" %}
+
+{% block page_title %}Feedback{% endblock %}
+
 {% block content %}
-<h2>Feedback of Customers</h2>
-<table border="2" cellpadding="10" class="table table-bordered">
-    {% if feedback %}
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Customer Feedback</div>
+    <div class="page-sub">{{ feedback|length }} response{{ feedback|length|pluralize }}</div>
+  </div>
+</div>
+
+{% if feedback %}
+<div class="panel">
+  <table class="booking-table">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Ratings</th>
-            <th>Image</th>
-            <th>Action</th>
-        </tr>
-        {% for feed in feedback %}
-        <tr>
-            <td>{{feed.User_name}}</td>
-            <td>{{feed.Description}}</td>
-            <td>{{feed.Ratings}}</td>
-            <td>{% if feed.Image %}
-                    <img src="{{ feed.Image.url }}" width="100" height="120">
-                {% else %}
-                    No Image
-                {% endif %}</td>
-            <td><a href="{% url 'feedbackdelete' feed.id %}" style="color:red;">
-                Delete</a></td>
-        </tr>
-        {% endfor %}
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Rating</th>
+        <th>Image</th>
+        <th>Action</th>
+      </tr>
     </thead>
-</table>
+    <tbody>
+      {% for feed in feedback %}
+      <tr>
+        <td class="cell-secondary">{{ forloop.counter }}</td>
+        <td class="cell-name">{{ feed.User_name }}</td>
+        <td class="cell-secondary desc-cell">{{ feed.Description }}</td>
+        <td><span class="rating-pill">{{ feed.Ratings }} ★</span></td>
+        <td>
+          {% if feed.Image %}
+            <img src="{{ feed.Image.url }}" class="item-thumb">
+          {% else %}
+            <div class="no-image">—</div>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'feedbackdelete' feed.id %}" class="delete-btn"
+             onclick="return confirm('Delete feedback from {{ feed.User_name }}?')">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 {% else %}
-<h2> No Feedback </h2>
+<div class="empty-state">
+  <div class="empty-icon">◷</div>
+  <div class="empty-title">No Feedback Yet</div>
+  <div class="empty-sub">Customer feedback will appear here once submitted.</div>
+</div>
 {% endif %}
+
 {% endblock %}

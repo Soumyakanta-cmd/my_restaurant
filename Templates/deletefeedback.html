@@ -1,16 +1,31 @@
-{% extends 'dashboard.html' %}
+{% extends "dashboard.html" %}
+
+{% block page_title %}Delete Feedback{% endblock %}
+
 {% block content %}
-<center>
-    <h2>Delete Feedback</h2>
-    <p>Are you sure you want to delete:
-    <h3>{{ feedback.User_name }}</h3> feedback</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" style="background:red; color:white;">
-        Yes, Delete
-        </button>
-    </form>
-    <br>
-    <a href="{% url 'feedbackview' %}">Cancel</a>
-</center>
+
+<div class="confirm-wrap">
+  <div class="panel confirm-panel">
+    <div class="panel-header">
+      <div class="panel-title">Delete Feedback</div>
+    </div>
+    <div class="confirm-body">
+
+      <p class="confirm-question">
+        Are you sure you want to delete feedback from
+        <span class="cell-name">{{ feedback.User_name }}</span>?
+      </p>
+
+      <div class="confirm-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="danger-btn">Yes, Delete</button>
+        </form>
+        <a href="{% url 'feedbackview' %}" class="delete-btn">Cancel</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}

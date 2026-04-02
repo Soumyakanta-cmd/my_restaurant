@@ -1,13 +1,36 @@
-{% extends 'dashboard.html' %}
+{% extends "dashboard.html" %}
+
+{% block page_title %}About Us{% endblock %}
+
 {% block content %}
-<h2>About us</h2>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">About Us</div>
+    <div class="page-sub">Manage your about us content</div>
+  </div>
+  {% if not about %}
+    <a href="{% url 'addabout' %}" class="add-btn">+ Add Content</a>
+  {% endif %}
+</div>
+
 {% if about %}
-{% for ab in about%}
-    <ul>{{ab.Description}}</ul>
-<a href="{% url 'editabout' ab.id %}" class="btn btn-outline-warning">Edit</a>
-{% endfor %}
+  {% for ab in about %}
+  <div class="panel about-panel">
+    <div class="panel-header">
+      <div class="panel-title">Description</div>
+      <a href="{% url 'editabout' ab.id %}" class="edit-btn">Edit</a>
+    </div>
+    <div class="about-body">{{ ab.Description }}</div>
+  </div>
+  {% endfor %}
+
 {% else %}
-<h4>Not added by admin</h4>
-<a href="{% url 'addabout'  %}" class="btn btn-outline-warning">Add</a>
+<div class="empty-state">
+  <div class="empty-icon">◎</div>
+  <div class="empty-title">Nothing Added Yet</div>
+  <div class="empty-sub">Add your about us content so customers can learn about Padmini.</div>
+</div>
 {% endif %}
+
 {% endblock %}

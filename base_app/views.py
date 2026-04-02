@@ -124,8 +124,19 @@ def verifyotp(request):
 from django.contrib.admin.views.decorators import staff_member_required
 @staff_member_required(login_url='admin_login')
 def dashboard(request):
-    pending_count = BookTable.objects.filter(status='Pending').count()
-    return render(request,'dashboard.html',{'pending_count':pending_count})
+    pending_count   = BookTable.objects.filter(status='Pending').count()
+    total_bookings  = BookTable.objects.count()
+    total_items     = Items.objects.count()
+    total_feedback  = FeedBack.objects.count()
+    recent_bookings = BookTable.objects.order_by('-id')[:5]
+ 
+    return render(request, 'dashboard.html', {
+        'pending_count':   pending_count,
+        'total_bookings':  total_bookings,
+        'total_items':     total_items,
+        'total_feedback':  total_feedback,
+        'recent_bookings': recent_bookings,
+    })
 
 def AdminLogoutView(request):
     logout(request)

@@ -1,16 +1,31 @@
-{% extends 'dashboard.html' %}
+{% extends "dashboard.html" %}
+
+{% block page_title %}Delete Offer{% endblock %}
+
 {% block content %}
-<center>
-    <h2>Delete Offer</h2>
-    <p>Are you sure you want to delete:
-    <h3>{{ offer.Item_name }}'s </h3>offer </p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" style="background:red; color:white;">
-        Yes, Delete
-        </button>
-    </form>
-    <br>
-    <a href="{% url 'offerus' %}">Cancel</a>
-</center>
+
+<div class="confirm-wrap">
+  <div class="panel confirm-panel">
+    <div class="panel-header">
+      <div class="panel-title">Delete Offer</div>
+    </div>
+    <div class="confirm-body">
+
+      <p class="confirm-question">
+        Are you sure you want to delete the offer for
+        <span class="cell-name">{{ offer.Item_name }}</span>?
+      </p>
+
+      <div class="confirm-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="danger-btn">Yes, Delete</button>
+        </form>
+        <a href="{% url 'offerus' %}" class="delete-btn">Cancel</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}

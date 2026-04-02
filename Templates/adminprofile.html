@@ -1,14 +1,44 @@
 {% extends "dashboard.html" %}
 
+{% block page_title %}Profile{% endblock %}
+
 {% block content %}
-<h2>Admin Profile</h2>
 
-<img src="{{ request.user.profile.image.url }}" width="150" height="150" style="border-radius:50%;">
+<div class="confirm-wrap">
+  <div class="panel confirm-panel">
+    <div class="panel-header">
+      <div class="panel-title">Admin Profile</div>
+      <a href="{% url 'edit-profile' %}" class="edit-btn">Edit Profile</a>
+    </div>
+    <div class="confirm-body">
 
-<p><strong>Username:</strong> {{ request.user.username }}</p>
-<p><strong>Email:</strong> {{ request.user.email }}</p>
+      <div class="profile-hero">
+        <div class="profile-avatar">
+          {% if request.user.profile.image %}
+            <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.username }}">
+          {% else %}
+            {{ request.user.username|first|upper }}
+          {% endif %}
+        </div>
+        <div class="profile-meta">
+          <div class="profile-name">{{ request.user.username }}</div>
+          <div class="profile-role">Administrator</div>
+        </div>
+      </div>
 
-<a href="{% url 'edit-profile' %}">
-    <button class="btn btn-info">Edit Profile</button>
-</a>
+      <div class="confirm-details">
+        <div class="confirm-row">
+          <span class="confirm-label">Username</span>
+          <span class="confirm-value">{{ request.user.username }}</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Email</span>
+          <span class="confirm-value">{{ request.user.email }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}
