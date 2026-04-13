@@ -1,0 +1,199 @@
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+  <title>Pay Bill — Padmini Restaurant</title>
+  <style>
+    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5;
+           display:flex; align-items:center; justify-content:center;
+           min-height:100vh; margin:0; }
+    .card { background:#fff; border-radius:16px; padding:40px;
+            text-align:center; max-width:420px; width:100%;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08); }
+    .logo { font-size:22px; font-weight:800; color:#ff5722; margin-bottom:4px; }
+    .amount { font-size:36px; font-weight:800; color:#222; margin:12px 0; }
+    .pay-btn { background:linear-gradient(135deg,#ff5722,#ff8f00);
+               color:#fff; border:none; padding:14px 40px; border-radius:50px;
+               font-size:16px; font-weight:700; cursor:pointer; width:100%; margin-top:16px; }
+    .test-box { background:#fff8e1; border:1px solid #ffe082; border-radius:10px;
+                padding:14px; margin-top:20px; text-align:left; font-size:13px; color:#555; }
+    .test-box strong { color:#ff5722; display:block; margin-bottom:6px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Padmini Restaurant</div>
+    <p style="color:#888; margin:0; font-size:14px;">Complete your payment</p>
+    <div class="amount">₹{{ amount_display }}</div>
+    <p style="color:#555; font-size:14px;">Hi {{ name }}</p>
+
+    <button class="pay-btn" onclick="openRazorpay()">Pay Now</button>
+
+    <!-- test credentials hint -->
+    <div class="test-box">
+      <strong>Test Mode — Use these details:</strong>
+      Card: 4111 1111 1111 1111<br>
+      Expiry: Any future date &nbsp;|&nbsp; CVV: Any 3 digits<br>
+      OTP: 1234<br><br>
+      UPI: success@razorpay (success) / failure@razorpay (fail)
+    </div>
+  </div>
+  <form id="payment-form" method="POST" action="/payment-success/">
+  {% csrf_token %}
+  <input type="hidden" name="payment_id"  id="payment_id">
+  <input type="hidden" name="order_id"    id="order_id">
+  <input type="hidden" name="booking_id"  value="{{ booking_id }}">
+</form>
+
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function openRazorpay() {
+    var options = {
+      key        : "{{ razorpay_key }}",
+      amount     : {{ amount }},
+      currency   : "INR",
+      {% comment %} order_id   : "{{ razorpay_order_id }}", {% endcomment %}
+      {% comment %} name       : "Padmini Restaurant",
+      description: "Table Booking Payment",
+      prefill    : {
+        name   : "{{ name }}",
+        email  : "{{ email }}",
+        contact: "{{ phone }}"
+      },
+      handler: function(response) {
+        document.getElementById('payment_id').value = response.razorpay_payment_id;
+        document.getElementById('order_id').value   = response.razorpay_order_id;
+        document.getElementById('payment-form').submit();
+      },
+      modal: {
+        ondismiss: function() {
+          window.location.href = "/Book_Table/";
+        }
+      }
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(openRazorpay, 500);
+  });
+</script>
+</body>
+</html> {% endcomment %} 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay Bill — Padmini Restaurant</title>
+  <style>
+    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5;
+           display:flex; align-items:center; justify-content:center;
+           min-height:100vh; margin:0; }
+    .card { background:#fff; border-radius:16px; padding:40px;
+            text-align:center; max-width:420px; width:100%;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08); }
+    .logo { font-size:22px; font-weight:800; color:#ff5722; margin-bottom:4px; }
+    .amount { font-size:36px; font-weight:800; color:#222; margin:12px 0; }
+    .pay-btn { background:linear-gradient(135deg,#ff5722,#ff8f00);
+               color:#fff; border:none; padding:14px 40px; border-radius:50px;
+               font-size:16px; font-weight:700; cursor:pointer; width:100%; margin-top:16px; }
+    .pay-btn:hover { opacity:0.9; }
+    .cancel-btn { background:#fff; color:#ff5722; border:1px solid #ff5722;
+                  padding:12px 40px; border-radius:50px; font-size:15px;
+                  font-weight:600; cursor:pointer; width:100%; margin-top:10px; }
+    .methods { display:flex; gap:10px; margin:20px 0; }
+    .method { flex:1; padding:12px; border:1px solid #eee; border-radius:10px;
+              cursor:pointer; font-size:13px; color:#555; transition:all 0.2s; }
+    .method:hover { border-color:#ff5722; color:#ff5722; }
+    .method.active { border-color:#ff5722; background:#fff5f2; color:#ff5722; font-weight:600; }
+    .input-box { width:100%; padding:10px 14px; border:1px solid #ddd;
+                 border-radius:8px; font-size:14px; margin-top:10px;
+                 box-sizing:border-box; outline:none; }
+    .input-box:focus { border-color:#ff5722; }
+    .label { font-size:12px; color:#888; text-align:left; margin-top:10px; display:block; }
+    .note { font-size:11px; color:#aaa; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Padmini Restaurant</div>
+    <p style="color:#888; margin:0; font-size:14px;">Complete your payment</p>
+    <div class="amount">₹{{ amount_display }}</div>
+    <p style="color:#555; font-size:14px; margin:0;">Hi {{ name }}</p>
+
+    <!-- payment methods -->
+    <div class="methods">
+      <div class="method active" onclick="selectMethod('upi')">UPI</div>
+      <div class="method" onclick="selectMethod('card')">Card</div>
+      <div class="method" onclick="selectMethod('netbanking')">Netbanking</div>
+    </div>
+
+    <!-- UPI section -->
+    <div id="upi-section">
+      <span class="label">Enter UPI ID</span>
+      <input class="input-box" id="upi-id" type="text" placeholder="example@upi">
+    </div>
+
+    <!-- card section -->
+    <div id="card-section" style="display:none">
+      <span class="label">Card Number</span>
+      <input class="input-box" type="text" placeholder="1234 5678 9012 3456">
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1">
+          <span class="label">Expiry</span>
+          <input class="input-box" type="text" placeholder="MM/YY">
+        </div>
+        <div style="flex:1">
+          <span class="label">CVV</span>
+          <input class="input-box" type="text" placeholder="123">
+        </div>
+      </div>
+    </div>
+
+    <!-- netbanking section -->
+    <div id="netbanking-section" style="display:none">
+      <span class="label">Select Bank</span>
+      <select class="input-box">
+        <option>SBI</option>
+        <option>HDFC</option>
+        <option>ICICI</option>
+        <option>Axis</option>
+      </select>
+    </div>
+
+    <button class="pay-btn" onclick="simulatePay()">Pay ₹{{ amount_display }}</button>
+    <button class="cancel-btn" onclick="window.location.href='/Book_Table/'">Cancel</button>
+    <p class="note">Simulated payment for testing only</p>
+  </div>
+
+  <!-- hidden form -->
+  <form id="payment-form" method="POST" action="/payment-success/">
+    {% csrf_token %}
+    <input type="hidden" name="payment_id"  id="payment_id">
+    <input type="hidden" name="order_id"    id="order_id">
+    <input type="hidden" name="booking_id"  value="{{ booking_id }}">
+  </form>
+
+  <script>
+    function selectMethod(method) {
+      document.querySelectorAll('.method').forEach(m => m.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('upi-section').style.display        = method === 'upi'         ? 'block' : 'none';
+      document.getElementById('card-section').style.display       = method === 'card'        ? 'block' : 'none';
+      document.getElementById('netbanking-section').style.display = method === 'netbanking'  ? 'block' : 'none';
+    }
+
+    function simulatePay() {
+      const btn = document.querySelector('.pay-btn');
+      btn.textContent = 'Processing...';
+      btn.disabled = true;
+
+      setTimeout(function() {
+        document.getElementById('payment_id').value = 'pay_test_' + Date.now();
+        document.getElementById('order_id').value   = 'order_test_' + Date.now();
+        document.getElementById('payment-form').submit();
+      }, 2000);  // 2 second delay to simulate processing
+    }
+  </script>
+</body>
+</html>

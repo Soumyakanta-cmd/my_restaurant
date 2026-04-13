@@ -31,6 +31,8 @@ class FeedBack(models.Model):
 
     def __str__(self):
         return self.User_name
+    
+
 
 class BookTable(models.Model):
     STATUS_CHOICES = (
@@ -43,7 +45,10 @@ class BookTable(models.Model):
     Email=models.EmailField()
     Total_person=models.IntegerField()
     booking_date=models.DateField()
-    items=models.ManyToManyField(Items)
+    items=models.ManyToManyField(Items, through='BookingItem')
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_status    = models.CharField(max_length=20, default='Unpaid')
+    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -52,6 +57,15 @@ class BookTable(models.Model):
 
     def __str__(self):
         return self.Name
+    
+class BookingItem(models.Model):
+    booking  = models.ForeignKey(BookTable, on_delete=models.CASCADE, related_name='booking_items')
+    item     = models.ForeignKey(Items, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.booking.Name} - {self.item.Item_name} x{self.quantity}"
+    
 
 from django.contrib.auth.models import User
 from django.db import models

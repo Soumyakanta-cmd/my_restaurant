@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; color: #333; }
+    .header { text-align: center; border-bottom: 2px solid #ff5722; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #ff5722; margin: 0; font-size: 28px; }
+    .header p  { color: #888; margin: 4px 0 0; font-size: 14px; }
+    .bill-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #333; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .info-label { color: #888; }
+    .info-value { font-weight: 600; color: #222; }
+    table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    th { background: #ff5722; color: #fff; padding: 10px 14px; text-align: left; font-size: 13px; }
+    td { padding: 10px 14px; border-bottom: 1px solid #eee; font-size: 14px; }
+    .total-row td { font-weight: 700; font-size: 16px; color: #ff5722; border-top: 2px solid #ff5722; border-bottom: none; }
+    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Padmini Multicusine Restaurant</h1>
+    <p>+91 9437742861 &nbsp;|&nbsp; support@padmini.com</p>
+  </div>
+
+  <div class="bill-title">Bill / Invoice</div>
+    <table width="100%" cellpadding="6" cellspacing="0" border="0" style="margin-bottom:20px;">
+        <tr>
+            <td style="font-size:14px; color:#888; width:40%;">Guest Name</td>
+            <td style="font-size:14px; color:#222; font-weight:600;">{{ booking.Name }}</td>
+        </tr>
+        <tr>
+            <td style="font-size:14px; color:#888;">Email</td>
+            <td style="font-size:14px; color:#222; font-weight:600;">{{ booking.Email }}</td>
+        </tr>
+        <tr>
+            <td style="font-size:14px; color:#888;">Phone</td>
+            <td style="font-size:14px; color:#222; font-weight:600;">{{ booking.Phone_number }}</td>
+        </tr>
+        <tr>
+            <td style="font-size:14px; color:#888;">Booking Date</td>
+            <td style="font-size:14px; color:#222; font-weight:600;">{{ booking.booking_date }}</td>
+        </tr>
+        <tr>
+            <td style="font-size:14px; color:#888;">Persons</td>
+            <td style="font-size:14px; color:#222; font-weight:600;">{{ booking.Total_person }}</td>
+        </tr>
+    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for bi in items %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ bi.item.Item_name }}</td>
+        <td>₹{{ bi.item.price }}</td>
+        <td>{{ bi.quantity }}</td>
+        <td>₹{% widthratio bi.item.price 1 bi.quantity %}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row">
+        <td colspan="4">Total</td>
+        <td>₹{{ total }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Thank you for dining at Padmini Restaurant!<br>
+    © 2025 Padmini. All rights reserved.
+  </div>
+</body>
+</html>

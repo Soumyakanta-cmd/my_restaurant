@@ -37,6 +37,10 @@ urlpatterns=[
     path('offerus/', offerus, name='offerus'),
     path('addoffer/', addoffer, name='addoffer'),
     path('deleteoffer/<int:id>', deleteoffer, name='deleteoffer'),
+    path('pay/<int:booking_id>/', pay_booking, name='pay_booking'),
+    path('payment-success/', payment_success, name='payment_success'),
+    path('bill/<int:booking_id>/', download_bill, name='download_bill'),
+
 ]   
 if settings.DEBUG:
     urlpatterns +=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

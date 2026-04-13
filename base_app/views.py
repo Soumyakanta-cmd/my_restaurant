@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-from base_app.models import ItemList, Items, AboutUs, FeedBack, BookTable,Offer
+from base_app.models import ItemList, Items, AboutUs, FeedBack, BookTable,Offer,BookingItem
 
 def HomeView(request):
     items = Items.objects.all()
     list = ItemList.objects.all()
     review = FeedBack.objects.all()
-    return render(request,'home.html',{'items': items, 'list': list, 'review': review})
+    offer=Offer.objects.all()
+    return render(request,'home.html',{'items': items, 'list': list, 'review': review,'offer':offer})
 
 def AboutView(request):
     data = AboutUs.objects.all()
@@ -30,7 +31,8 @@ def BookTableView(request):
         email = request.POST.get('user_email')
         total_person = request.POST.get('total_person')
         booking_date = request.POST.get('booking_date')
-        book_items = request.POST.get('items')
+        book_items = request.POST.getlist('items')
+        
 
         if name != '' and len(phone_number) == 10 and email != '' and total_person != 0 and booking_date != '':
             data = BookTable(Name=name, Phone_number=phone_number,
@@ -38,7 +40,12 @@ def BookTableView(request):
                              booking_date=booking_date)
             
             data.save()
-            data.items.set([book_items])
+            for id in book_items:
+                BookingItem.objects.create(
+                    booking=data,
+                    item_id=int(id),
+                    quantity=int(request.POST.get('qty_' + id, 1))
+                )
             
             
             messages.success(request ,"✅ Your request is approved and wait for confirmation ")
@@ -122,6 +129,8 @@ def verifyotp(request):
     return render(request,'verifyotp.html')
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.utils import timezone
+from django.db.models import Sum,F
 @staff_member_required(login_url='admin_login')
 def dashboard(request):
     pending_count   = BookTable.objects.filter(status='Pending').count()
@@ -129,6 +138,14 @@ def dashboard(request):
     total_items     = Items.objects.count()
     total_feedback  = FeedBack.objects.count()
     recent_bookings = BookTable.objects.order_by('-id')[:5]
+    today = timezone.now().date()
+
+    today_revenue = BookingItem.objects.filter(
+        booking__booking_date=today,
+        booking__payment_status='Paid'
+    ).aggregate(
+        total=Sum(F('item__price') * F('quantity'))
+    )['total'] or 0
  
     return render(request, 'dashboard.html', {
         'pending_count':   pending_count,
@@ -136,6 +153,7 @@ def dashboard(request):
         'total_items':     total_items,
         'total_feedback':  total_feedback,
         'recent_bookings': recent_bookings,
+        'today_revenue': today_revenue,
     })
 
 def AdminLogoutView(request):
@@ -158,71 +176,32 @@ def update_booking(request, id):
         })
 
     return redirect('booking')
-
+from django.template.loader import render_to_string
 @staff_member_required(login_url='admin_login')
 def confirm_update(request, id):
     booking = get_object_or_404(BookTable, id=id)
 
     if request.method == "POST":
         status = request.POST.get('status')
+        payment_link = f"http://127.0.0.1:8000/pay/{booking.id}/"
+        total = sum(bi.item.price * bi.quantity for bi in booking.booking_items.all())
+        bill_link = f"http://127.0.0.1:8000/bill/{booking.id}/"
 
         if status:
             if status == "Confirmed":
-                html_content = f"""
-                            <html>
-                            <body style="font-family: Arial, sans-serif; background-color:#f4f4f4; padding:20px;">
-                                
-                                <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px;">
-                                    
-                                    <h2 style="color:#28a745; text-align:center;">Booking Confirmed ✅</h2>
-                                    
-                                    <p>Hello <b>{booking.Name}</b>,</p>
-                                    
-                                    <p>
-                                        Your booking has been <b style="color:green;">confirmed</b>.
-                                        Please wait until our waiter comes and assists you.
-                                    </p>
-                                    
-                                    <p>We hope you have a wonderful time at our restaurant 🍽️</p>
-
-                                    <hr>
-
-                                    <h4>📞 Contact Us</h4>
-                                    <p>
-                                        Phone: +91 9437742861<br>
-                                        Email: support@padmini.com
-                                    </p>
-
-                                    <h4>🌐 Follow Us</h4>
-                                    <p>
-                                        <a href="https://facebook.com">
-                                            <img src="https://cdn-icons-png.flaticon.com/24/733/733547.png">
-                                        </a>
-                                        <a href="https://instagram.com">
-                                            <img src="https://cdn-icons-png.flaticon.com/24/733/733558.png">
-                                        </a>
-                                        <a href="https://twitter.com">
-                                            <img src="https://cdn-icons-png.flaticon.com/24/733/733579.png">
-                                        </a>
-                                    </p>
-
-                                    <hr>
-
-                                    <p style="text-align:center; color:gray;">
-                                        Thank you for choosing <b>padmini Restaurant</b> ❤️
-                                    </p>
-
-                                </div>
-
-                            </body>
-                            </html>
-                            """
+                html_content =render_to_string('emails/booking_confirmed.html', {
+                    'name':  booking.Name,
+                    'email': booking.Email,
+                    'items' : booking.booking_items.all(),
+                    'total' : total,
+                    'payment_link': payment_link,
+                    'bill_link' : bill_link,
+                })
                 email = EmailMultiAlternatives(
-                    subject="Booking Confirmed ✅",
-                    body="Your booking has been confirmed",
+                   subject="✅ Booking Confirmed — Padmini Restaurant",
+                    body="Your booking has been confirmed. We look forward to seeing you!",
                     from_email=settings.EMAIL_HOST_USER,
                     to=[booking.Email],
-                   
                 )
                 email.attach_alternative(html_content, "text/html")
                 email.send()
@@ -407,4 +386,80 @@ def deleteoffer(request,id):
         return redirect('offerus')
     return render(request,'deleteoffer.html',{'offer':offer})
 
+import razorpay
+from django.conf import settings
+def pay_booking(request, booking_id):
+    booking = get_object_or_404(BookTable, id=booking_id)
+    total   = sum(bi.item.price * bi.quantity for bi in booking.booking_items.all())
+    print("BOOKING ID:", booking_id)        
+    print("TOTAL:", total)                  
+    print("ITEMS:", list(booking.booking_items.all())) 
 
+    client         = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    razorpay_order = client.order.create({
+        'amount'         : total * 100,
+        'currency'       : 'INR',
+        'payment_capture': 1
+    })
+    if total == 0:
+        messages.error(request, "No items found for this booking.")
+        return redirect('Book_Table')
+
+    booking.razorpay_order_id = razorpay_order['id']
+    booking.save()
+    
+    return render(request, 'payment.html', {
+        'razorpay_key'     : settings.RAZORPAY_KEY_ID,
+        'razorpay_order_id': razorpay_order['id'],
+        'amount'           : total * 100,
+        'amount_display'   : total,
+        'name'             : booking.Name,
+        'email'            : booking.Email,
+        'phone'            : booking.Phone_number,
+        'booking_id'       : booking.id,
+    })
+
+def payment_success(request):
+    if request.method == 'POST':
+        payment_id = request.POST.get('payment_id')
+        order_id   = request.POST.get('order_id')
+        booking_id = request.POST.get('booking_id')
+    else:
+        payment_id = request.GET.get('payment_id')
+        order_id   = request.GET.get('order_id')
+        booking_id = request.GET.get('booking_id')
+
+    try:
+        booking = BookTable.objects.get(id=booking_id)
+        booking.payment_status      = 'Paid'
+        booking.razorpay_payment_id = payment_id
+        booking.save()
+    except BookTable.DoesNotExist:
+        booking = None
+
+    return render(request, 'payment_success.html', {'booking': booking})
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from io import BytesIO
+
+def download_bill(request, booking_id):
+    booking = get_object_or_404(BookTable, id=booking_id)
+    total   = sum(bi.item.price * bi.quantity for bi in booking.booking_items.all())
+
+    html_string = render_to_string('emails/bill_pdf.html', {
+        'booking': booking,
+        'items'  : booking.booking_items.all(),
+        'total'  : total,
+    })
+
+    buffer=BytesIO()
+    pisa.CreatePDF(html_string,dest=buffer)
+    pdf=buffer.getvalue()
+    buffer.close()
+    
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="bill_{booking_id}.pdf"'
+    return response

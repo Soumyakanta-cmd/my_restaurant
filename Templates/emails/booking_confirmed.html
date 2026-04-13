@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking Confirmed</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f2f5; font-family:'Segoe UI', Helvetica, Arial, sans-serif;">
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f2f5; padding: 30px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Card -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0"
+               style="background:#ffffff; border-radius:12px; overflow:hidden;
+                      box-shadow:0 2px 12px rgba(0,0,0,0.08); max-width:600px;">
+
+          <!-- ── HEADER BANNER ── -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #ff5722 0%, #ff8f00 100%);
+                        padding: 36px 40px; text-align:center;">
+              <p style="margin:0 0 6px 0; font-size:13px; color:rgba(255,255,255,0.85);
+                         letter-spacing:3px; text-transform:uppercase; font-weight:600;">
+                Padmini Restaurant
+              </p>
+              <h1 style="margin:0; font-size:28px; font-weight:800; color:#ffffff; letter-spacing:-0.5px;">
+                Your Table is Confirmed!
+              </h1>
+              <p style="margin:10px 0 0; font-size:15px; color:rgba(255,255,255,0.9);">
+                We can't wait to serve you 🍽️
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── SUCCESS BADGE ── -->
+          <tr>
+            <td align="center" style="padding: 28px 40px 0;">
+              <div style="display:inline-block; background:#e8f5e9; border:1.5px solid #a5d6a7;
+                           border-radius:50px; padding:10px 24px;">
+                <span style="font-size:15px; font-weight:700; color:#2e7d32;">
+                  ✅ &nbsp;Booking Status: Confirmed
+                </span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── GREETING ── -->
+          <tr>
+            <td style="padding: 24px 40px 0;">
+              <p style="margin:0; font-size:16px; color:#333333; line-height:1.6;">
+                Hey <strong style="color:#ff5722;">{{name}}</strong> 👋,
+              </p>
+              <p style="margin:12px 0 0; font-size:15px; color:#555555; line-height:1.7;">
+                Great news! Your table reservation at <strong>Padmini Restaurant</strong> has been
+                <strong style="color:#2e7d32;">confirmed</strong>. Our team is all set to give you
+                a wonderful dining experience. Your waiter will be with you shortly after you arrive.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── BOOKING DETAILS CARD ── -->
+          <tr>
+            <td style="padding: 24px 40px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="background:#fff8f5; border:1px solid #ffe0d3;
+                             border-radius:10px; overflow:hidden;">
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid #ffe0d3;
+                              background:#ff5722;">
+                    <p style="margin:0; font-size:13px; font-weight:700; color:#fff;
+                               letter-spacing:1.5px; text-transform:uppercase;">
+                      📋 &nbsp;Reservation Summary
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:20px;">
+                    <table width="100%" cellpadding="6" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:14px; color:#888; width:40%;">Guest Name</td>
+                        <td style="font-size:14px; color:#222; font-weight:600;">{{name}}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:14px; color:#888;">Email</td>
+                        <td style="font-size:14px; color:#222; font-weight:600;">{{email}}</td>
+                      </tr>
+                      {% for bi in items %}
+                      <tr>
+                        <td style="font-size:14px; color:#888; width:40%;">Item</td>
+                        <td style="font-size:14px; color:#222; font-weight:600;">
+                          {{ bi.item.Item_name }} x{{ bi.quantity }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:14px; color:#888;">Price</td>
+                        <td style="font-size:14px; color:#222; font-weight:600;">
+                          ₹{{ bi.item.price }} × {{ bi.quantity }} = ₹{% widthratio bi.item.price 1 bi.quantity %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="2" style="font-size:14px; color:#888;">No items selected</td>
+                      </tr>
+                      {% endfor %}
+                      <tr style="border-top: 1px solid #ffe0d3;">
+                        <td style="font-size:15px; color:#ff5722; font-weight:700; padding-top:10px;">Total</td>
+                        <td style="font-size:15px; color:#ff5722; font-weight:700; padding-top:10px;">₹{{ total }}</td>
+                      </tr>
+                        
+                      <tr>
+                        <td style="font-size:14px; color:#888;">Status</td>
+                        <td>
+                          <span style="background:#e8f5e9; color:#2e7d32; font-size:13px;
+                                        font-weight:700; padding:3px 12px; border-radius:20px;">
+                            Confirmed
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 28px 40px 0;">
+              <a href="{{payment_link}}"
+                style="display:inline-block; background:linear-gradient(135deg,#ff5722,#ff8f00);
+                        color:#ffffff; font-size:16px; font-weight:700; text-decoration:none;
+                        padding:14px 40px; border-radius:50px; letter-spacing:0.5px;">
+                💳 &nbsp;Pay Your Bill Now
+              </a>
+              <p style="margin:10px 0 0; font-size:12px; color:#aaa;">
+                Secure payment powered by Razorpay
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 12px 40px 0;">
+              <a href="{{bill_link}}"
+                style="display:inline-block; background:#ffffff; border:2px solid #ff5722;
+                        color:#ff5722; font-size:15px; font-weight:700; text-decoration:none;
+                        padding:12px 36px; border-radius:50px; letter-spacing:0.5px;">
+                🧾 &nbsp;Download Bill
+              </a>
+            </td>
+          </tr>
+
+          <!-- ── DIVIDER ── -->
+          <tr>
+            <td style="padding: 28px 40px 0;">
+              <hr style="border:none; border-top:1px solid #eeeeee; margin:0;" />
+            </td>
+          </tr>
+          
+
+          <!-- ── CONTACT + SOCIAL ── -->
+          <tr>
+            <td style="padding: 20px 40px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="vertical-align:top; width:50%;">
+                    <p style="margin:0 0 8px; font-size:13px; font-weight:700; color:#333;
+                               text-transform:uppercase; letter-spacing:1px;">
+                      📞 &nbsp;Need Help?
+                    </p>
+                    <p style="margin:0; font-size:13px; color:#666; line-height:1.8;">
+                      +91 9437742861<br/>
+                      support@padmini.com
+                    </p>
+                  </td>
+                  <td style="vertical-align:top; text-align:right;">
+                    <p style="margin:0 0 10px; font-size:13px; font-weight:700; color:#333;
+                               text-transform:uppercase; letter-spacing:1px;">
+                      🌐 &nbsp;Follow Us
+                    </p>
+                    <a href="https://facebook.com" style="text-decoration:none; margin-left:8px;">
+                      <img src="https://cdn-icons-png.flaticon.com/24/733/733547.png"
+                           width="26" height="26" alt="Facebook"
+                           style="border-radius:50%; background:#f0f2f5; padding:3px;" />
+                    </a>
+                    <a href="https://instagram.com" style="text-decoration:none; margin-left:8px;">
+                      <img src="https://cdn-icons-png.flaticon.com/24/733/733558.png"
+                           width="26" height="26" alt="Instagram"
+                           style="border-radius:50%; background:#f0f2f5; padding:3px;" />
+                    </a>
+                    <a href="https://twitter.com" style="text-decoration:none; margin-left:8px;">
+                      <img src="https://cdn-icons-png.flaticon.com/24/733/733579.png"
+                           width="26" height="26" alt="Twitter"
+                           style="border-radius:50%; background:#f0f2f5; padding:3px;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ── -->
+          <tr>
+            <td style="padding: 24px 40px 32px; text-align:center;">
+              <p style="margin:0; font-size:13px; color:#aaaaaa; line-height:1.6;">
+                You received this email because a reservation was made at<br/>
+                <strong style="color:#ff5722;">Padmini Restaurant</strong>.
+                &nbsp;|&nbsp; © 2025 Padmini. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -23,6 +23,7 @@
         <th>Date</th>
         <th>Items</th>
         <th>Status</th>
+        <th>Payment</th> 
         <th>Action</th>
       </tr>
     </thead>
@@ -49,12 +50,22 @@
 
         <td>
           <div class="items-list">
-            {% for item in book.items.all %}
-              <span class="item-tag">{{ item.Item_name }}</span>
+            {% for bi in book.booking_items.all %}
+              <span class="item-tag">
+                {{ bi.item.Item_name }}
+                <span class="item-qty">x{{ bi.quantity }}</span>
+              </span>
             {% empty %}
               <span class="cell-secondary">No items</span>
             {% endfor %}
           </div>
+        </td>
+        <td>
+          {% if book.payment_status == 'Paid' %}
+            <span class="status-pill pill-confirmed">Paid</span>
+          {% else %}
+            <span class="status-pill pill-pending">Unpaid</span>
+          {% endif %}
         </td>
 
         <td>

@@ -146,27 +146,21 @@
               <input type="date" name="booking_date" class="form-control" id="booking_date" required>
             </div>
 
-            <!-- Multi-item selector -->
-            <div class="items-selector">
-              <div class="items-label">Choose Items <span class="items-hint">(select one or more)</span></div>
-              <div class="items-grid" id="items-grid">
-                {% for item in items %}
-                <label class="item-card" id="card-{{ item.id }}">
-                  <input type="checkbox" name="items" value="{{ item.id }}"
-                         onchange="toggleCard({{ item.id }}, this)">
-                  <div class="item-card-name">{{ item.Item_name }}</div>
-                  <div class="item-card-price">₹{{ item.price }}</div>
-                  <div class="item-card-check">✓</div>
-                </label>
-                {% endfor %}
-              </div>
-              <div class="items-error" id="items-error"></div>
+           <div class="items-selector">
+              <div class="items-label">Choose Items <span class="items-hint">(search to add)</span></div>
+
+              <input class="filter-input" id="item-filter" type="text"
+                    placeholder="Search items..." autocomplete="off" oninput="filterItems()">
+
+              <div id="dropdown" class="dropdown" style="display:none;"></div>
+
+              <div id="items-error" class="items-error"></div>
             </div>
 
-            <!-- Selected summary -->
-            <div class="selected-summary" id="selected-summary" style="display:none;">
-              <span class="selected-label">Selected:</span>
-              <span id="selected-names"></span>
+            <div id="cart-section" class="selected-summary" style="display:none;">
+              <div class="selected-label">Selected items</div>
+              <div id="cart-rows"></div>
+              <div class="cart-total"><span>Total</span><span id="cart-total">₹0</span></div>
             </div>
 
             <div class="btn_box">

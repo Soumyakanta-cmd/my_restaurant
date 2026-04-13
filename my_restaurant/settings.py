@@ -131,6 +131,9 @@ PASSWORD_HASHERS = [
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [STATIC_DIR]
 
+RAZORPAY_KEY_ID = 'rzp_test_SbW6L8BzdAwxm2'
+RAZORPAY_KEY_SECRET = 'CEPQW6ZRyje9VM90Hg9bHPzf'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -138,8 +141,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'soumyakantapati83@gmail.com'
+EMAIL_HOST_PASSWORD = 'budv fvfc mskx zlps'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
